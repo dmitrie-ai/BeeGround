@@ -191,6 +191,7 @@ public class BeeClustSettings : EditorWindow
             //master.phePath = phePath;
             GameObject camera = GameObject.Find("Main Camera");
             camera.transform.position = new Vector3((float)length / 2.0f, Mathf.Max(length, width) * 1.10f, (float)width / 2.0f);
+       
         }
     }
     
@@ -489,10 +490,10 @@ public class BeeClustSettings : EditorWindow
         GUILayout.Label("", EditorStyles.boldLabel);
 
         GUILayout.Label("Determine Bee Placement", EditorStyles.boldLabel);
-        minX = EditorGUILayout.IntField("Minimum X Limit", minX);
-        maxX = EditorGUILayout.IntField("Maximum X Limit", maxX);
-        minY = EditorGUILayout.IntField("Minimum Y Limit", minY);
-        maxY = EditorGUILayout.IntField("Maximum Y Limit", maxY);
+        minX = EditorGUILayout.IntField("Minimum X Limit", 0);
+        maxX = EditorGUILayout.IntField("Maximum X Limit", width);
+        minY = EditorGUILayout.IntField("Minimum Y Limit", 0);
+        maxY = EditorGUILayout.IntField("Maximum Y Limit", length);
         GUILayout.Label("", EditorStyles.boldLabel);
         if (GUILayout.Button("Generate"))
         {

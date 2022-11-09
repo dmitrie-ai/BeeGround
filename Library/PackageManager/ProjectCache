@@ -5,21 +5,132 @@ m_ProjectFiles:
     m_ContentTrackingEnabled: 1
     m_ModificationDate:
       serializedVersion: 2
-      ticks: 638027532311858885
-    m_Hash: 1564275703
+      ticks: 638036093249086296
+    m_Hash: 2871714926
   m_LockFileStatus:
     m_FilePath: C:/Users/dmitr/Desktop/project/code/Bee-Ground_1.0/Bee-Ground_1.0/Packages/packages-lock.json
     m_PathExists: 1
     m_ContentTrackingEnabled: 1
     m_ModificationDate:
       serializedVersion: 2
-      ticks: 638027532440243208
-    m_Hash: 2234927573
+      ticks: 638036093249172436
+    m_Hash: 3942791389
 m_EmbeddedPackageManifests:
   m_ManifestsStatus: {}
 m_PackageAssets:
   m_Packages:
     m_ResolvedPackages:
+    - packageId: com.unity.automated-testing@0.8.1-preview.2
+      testable: 0
+      isDirectDependency: 1
+      version: 0.8.1-preview.2
+      source: 1
+      resolvedPath: C:\Users\dmitr\Desktop\project\code\Bee-Ground_1.0\Bee-Ground_1.0\Library\PackageCache\com.unity.automated-testing@0.8.1-preview.2
+      assetPath: Packages/com.unity.automated-testing
+      name: com.unity.automated-testing
+      displayName: Automated QA
+      author:
+        name: 
+        email: 
+        url: 
+      category: 
+      type: asset
+      description: 'December 6, 2021: Automated QA Development has been put on hold
+        until further notice. Thank you for your interest and support.
+
+
+        The
+        Automated QA package enables users to create Unity Tests from recordings
+        of touch and drag interactions with the UI of a Unity Project and run Unity
+        Tests on iOS and Android devices in our cloud device farm (hosted and managed
+        by Unity) - tests can be executed from the Unity editor, command line, or
+        your continuous integration (CI) pipeline.'
+      status: 4
+      errors: []
+      versions:
+        all:
+        - 0.0.6-preview.1
+        - 0.0.7-preview.3
+        - 0.1.0-preview.1
+        - 0.2.0-preview.3
+        - 0.3.0-preview.8
+        - 0.3.1-preview.2
+        - 0.4.0-preview.1
+        - 0.5.0-preview.1
+        - 0.6.1-preview.2
+        - 0.7.0-preview.2
+        - 0.8.0-preview.1
+        - 0.8.1-preview.2
+        compatible:
+        - 0.0.6-preview.1
+        - 0.0.7-preview.3
+        - 0.1.0-preview.1
+        - 0.2.0-preview.3
+        - 0.3.0-preview.8
+        - 0.3.1-preview.2
+        - 0.4.0-preview.1
+        - 0.5.0-preview.1
+        - 0.6.1-preview.2
+        - 0.7.0-preview.2
+        - 0.8.0-preview.1
+        - 0.8.1-preview.2
+        verified: 
+      dependencies:
+      - name: com.unity.modules.ui
+        version: 1.0.0
+      - name: com.unity.ugui
+        version: 1.0.0
+      - name: com.unity.modules.unityanalytics
+        version: 1.0.0
+      - name: com.unity.modules.jsonserialize
+        version: 1.0.0
+      - name: com.unity.modules.screencapture
+        version: 1.0.0
+      - name: com.unity.modules.imageconversion
+        version: 1.0.0
+      - name: com.unity.modules.unitywebrequest
+        version: 1.0.0
+      resolvedDependencies:
+      - name: com.unity.modules.ui
+        version: 1.0.0
+      - name: com.unity.ugui
+        version: 1.0.0
+      - name: com.unity.modules.imgui
+        version: 1.0.0
+      - name: com.unity.modules.unityanalytics
+        version: 1.0.0
+      - name: com.unity.modules.unitywebrequest
+        version: 1.0.0
+      - name: com.unity.modules.jsonserialize
+        version: 1.0.0
+      - name: com.unity.modules.screencapture
+        version: 1.0.0
+      - name: com.unity.modules.imageconversion
+        version: 1.0.0
+      keywords:
+      - recorded testing
+      - automated testing
+      - automated qa
+      registry:
+        id: main
+        name: 
+        url: https://packages.unity.com
+        scopes: []
+        isDefault: 1
+        capabilities: 7
+      hasRegistry: 1
+      hideInEditor: 0
+      entitlements:
+        isAllowed: 1
+      isAssetStorePackage: 0
+      datePublishedTicks: 637750154760000000
+      documentationUrl: 
+      hasRepository: 1
+      repository:
+        type: git
+        url: https://github.com/Unity-Technologies/automated-testing.git
+        revision: 370a6928923ee9d4cbc948f70ce73087e49787a7
+        path: 
     - packageId: com.unity.ide.visualstudio@2.0.9
       testable: 0
       isDirectDependency: 1
@@ -2114,7 +2225,7 @@ m_PackageAssets:
         email: 
         url: 
       category: Libraries
-      type: 
+      type: asset
       description: Custom version of the nunit package build to work with Unity.
         Used by the Unity Test Framework.
       status: 4
@@ -2128,6 +2239,7 @@ m_PackageAssets:
         - 1.0.5
         - 1.0.6
         - 2.0.2
+        - 2.0.3
         compatible:
         - 0.1.5-preview
         - 0.1.6-preview
@@ -2136,6 +2248,7 @@ m_PackageAssets:
         - 1.0.5
         - 1.0.6
         - 2.0.2
+        - 2.0.3
         verified: 1.0.6
       dependencies: []
       resolvedDependencies: []
@@ -2151,7 +2264,7 @@ m_PackageAssets:
         isDefault: 1
         capabilities: 7
       hasRegistry: 1
-      hideInEditor: 1
+      hideInEditor: 0
       entitlements:
         isAllowed: 1
       isAssetStorePackage: 0

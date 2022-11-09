@@ -1,0 +1,8 @@
+Run	Time	Name	X_pos	Y_pos	State	Delay	OnCue
+0	0.95	Bee04	42.90	40.36	0	0	False
+0	1.56	Bee18	0.82	26.69	0	0	False
+0	1.97	Bee04	42.88	40.38	0	0	False
+0	3.78	Bee04	42.89	40.38	0	0	False
+0	6.17	Bee18	0.81	26.69	0	0	False
+0	7.18	Bee18	0.81	26.68	0	0	False
+0	7.81	Bee17	32.75	20.29	0	55.91531	True

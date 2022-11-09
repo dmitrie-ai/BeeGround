@@ -57,6 +57,7 @@ public class BeeClust : MonoBehaviour
         master = GameObject.Find("Master").GetComponent<Parameters>();
 
         fileDir = master.fileDir;
+        Debug.Log("fileDir in BeeClust.cs: " + fileDir);
 
         path_Collision = fileDir + "/" + System.DateTime.Now.ToString("dd-MM-yy_hhmmss") + "_Collision" + ".txt";
         if (!File.Exists(path_Collision))

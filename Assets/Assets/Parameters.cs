@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System.IO;
+using UnityEngine.SceneManagement;
+
 
 public class Parameters : MonoBehaviour
 {
@@ -20,10 +22,10 @@ public class Parameters : MonoBehaviour
     public float beeSpeed;
     public float beeTurn;
     public float senseRange;
-    public int minX;
-    public int maxX;
-    public int minY;
-    public int maxY;
+    public int minX = 0;
+    public int maxX = 0;
+    public int minY = 0;
+    public int maxY = 0;
     public int digitCount;
     public float simTime;
     public int simCount;
@@ -38,10 +40,14 @@ public class Parameters : MonoBehaviour
     public int totalInstances;
     public int instance = 0;
     GameObject[] monas;
-
+    
     // Start is called before the first frame update
     void Start()
     {
+        
+
+        maxX = length;
+        maxY = width;
         if(tempPath != "" && tempPath != null)
         {
             
@@ -166,6 +172,8 @@ public class Parameters : MonoBehaviour
             {
                 Debug.Log("End");
                 run = false;
+                //SceneManager.LoadScene("AutoPlay", LoadSceneMode.Additive);
+
             }
         }
     }

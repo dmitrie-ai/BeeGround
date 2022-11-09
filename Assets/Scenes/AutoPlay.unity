@@ -138,7 +138,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!114 &1499760059
 MonoBehaviour:
@@ -152,7 +152,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3cfe3e5458c8e2a4da92db280b1d09c2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  beeNumbers: 
+  beeNumbers: 100
   thetaValues: 
 --- !u!4 &1499760060
 Transform:
