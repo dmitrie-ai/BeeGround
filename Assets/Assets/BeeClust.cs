@@ -152,10 +152,10 @@ public class BeeClust : MonoBehaviour
                             {
                                 turnAngle = -turnAngle1;
                             }*/
-                            turnAngle = getRandomTurningAngle();
+                            turnAngle = getRandomTurnAngle();
                             if (frontSens.transform.gameObject.CompareTag("MONA")) //if the hit is another robot
                             {
-                                WaitFunction();   // wait then turning =True
+                                WaitFunction();   // wait then turning =True and turnAngle = towards hot
                             }
                             else
                             {
@@ -170,7 +170,7 @@ public class BeeClust : MonoBehaviour
                         {
                             startBearing = transform.rotation;
                             //turnAngle = turnAngle2;
-                            turnAngle = getRandomTurningAngle();
+                            turnAngle = getRandomTurnAngle();
                             if (frontSens.transform.gameObject.CompareTag("MONA") && !frontSensingOnly)
                             {
                                 WaitFunction();
@@ -187,7 +187,7 @@ public class BeeClust : MonoBehaviour
                         {
                             startBearing = transform.rotation;
                             //turnAngle = turnAngle3;
-                            turnAngle = getRandomTurningAngle();
+                            turnAngle = getRandomTurnAngle();
                             if (frontSens.transform.gameObject.CompareTag("MONA") && !frontSensingOnly)
                             {
                                 WaitFunction();
@@ -204,7 +204,7 @@ public class BeeClust : MonoBehaviour
                         {
                             startBearing = transform.rotation;
                             //turnAngle = -turnAngle2;
-                            turnAngle = getRandomTurningAngle();
+                            turnAngle = getRandomTurnAngle();
                             if (frontSens.transform.gameObject.CompareTag("MONA") && !frontSensingOnly)
                             {
                                 WaitFunction();
@@ -221,7 +221,7 @@ public class BeeClust : MonoBehaviour
                         {
                             startBearing = transform.rotation;
                             //turnAngle = -turnAngle3;
-                            turnAngle = getRandomTurningAngle();
+                            turnAngle = getRandomTurnAngle();
                             if (frontSens.transform.gameObject.CompareTag("MONA") && !frontSensingOnly)
                             {
                                 WaitFunction();
@@ -275,8 +275,6 @@ public class BeeClust : MonoBehaviour
         Vector3 leftTip = transform.position + tempSensorLeft;
         int leftTipX = (int)Mathf.Round(leftTip.x * 10.0f);
         int leftTipY = (int)Mathf.Round(leftTip.z * 10.0f);
-     /*   Debug.Log("LeftTipX : " + leftTipX.ToString() + "  LeftTipY: " + leftTipY.ToString());
-        Debug.Log("RightTipX : " + rightTipX.ToString() + "  RightTipY: " + rightTipY.ToString());*/
         //get temps at each antenna
         int leftTemp;
         int rightTemp;
@@ -304,21 +302,19 @@ public class BeeClust : MonoBehaviour
         if (leftTemp > rightTemp)
         {
             turnAngle = -fixedTempTurnAngle;
-            //oncue = true;
             
         }
         else if (rightTemp > leftTemp)
         {
             turnAngle = fixedTempTurnAngle;
-            /*oncue = true;*/
             
         }
         else {
-            turnAngle = getRandomTurningAngle();
+            turnAngle = getRandomTurnAngle();
             
         }
     }
-    int getRandomTurningAngle() {
+    int getRandomTurnAngle() {
         
         int[] angleOptions = new int[] { -90, -80, -70, -60, -50,  90, 80, 70, 60, 50}; // removed smaller angles because those angles will most likely point towards the wall it collided with
         int index = Random.Range(0,angleOptions.Length);
@@ -364,7 +360,7 @@ public class BeeClust : MonoBehaviour
         if (newOnCue != oncue) { // if oncue changes. write to file so we can track. Don't write otherwise because it's redundant
             oncue = newOnCue;
             WriteToCollisionsFile();
-            Debug.Log("On cue changed to: " + oncue.ToString());
+            //Debug.Log("On cue changed to: " + oncue.ToString());
         }
 
 
@@ -408,7 +404,10 @@ public class BeeClust : MonoBehaviour
 
         writer_state.WriteLine(master.iteration + "\t" + time.ToString("F2") + "\t" + gameObject.name + "\t" + transform.localPosition.x.ToString("F2") + "\t" + transform.localPosition.z.ToString("F2") + "\t" + "0" + "\t" + w + "\t" + oncue);
         writer_state.Close();
-        GetTurnAngle();
+        if (followTemp == true) {
+            GetTurnAngle();
+        }
+        
         Debug.Log("Intelligent turn angle: " + turnAngle.ToString());
         StartCoroutine(Delay(w));
     }

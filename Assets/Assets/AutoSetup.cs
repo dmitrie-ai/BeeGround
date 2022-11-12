@@ -25,6 +25,7 @@ public class AutoSetup : MonoBehaviour
 
     //Bee Settings
     public int beeCount = 30;
+    public bool followTemp = false;
     float beeWidth = 0.8f;
     float beeLength = 0.8f;
     float beeSpeed = 2.0f;
@@ -32,11 +33,14 @@ public class AutoSetup : MonoBehaviour
     float senseRange = 1.0f;
     float maxW = 60.0f;
     public float theta = 1000.0f;
+    public float timeSpeed = 1;
+
     int minX = 0;
     int maxX = 50;
     int minY = 0;
     int maxY = 50;
     int digitCount;
+
     System.DateTime startDateTime;
 
     //Sim Settings
@@ -51,11 +55,15 @@ public class AutoSetup : MonoBehaviour
         // ===
         if (GameObject.Find("AutoPlayer") != null)
         {
-            beeCount = AutoPlayer.startScene.beeNumbers; // needed for when we automate the runs. In AutoPlay Scene, parameter values are set and they are passed to the BeeClust scene one by one.
+            beeCount = AutoPlayer.startScene.beeCount; // needed for when we automate the runs. In AutoPlay Scene, parameter values are set and they are passed to the BeeClust scene one by one.
+            theta = AutoPlayer.startScene.theta;
+            simTime = AutoPlayer.startScene.simTime;
+            simCount = AutoPlayer.startScene.simCount;
         } 
         BuildArena();
         GenerateBees();
         SimConfig();
+        Time.timeScale = timeSpeed;
     }
 
 
@@ -101,13 +109,26 @@ public class AutoSetup : MonoBehaviour
     }
 
     void ClearBees()
-
     {
-        GameObject[] monas = GameObject.FindGameObjectsWithTag("MONA");
-        foreach (GameObject mona in monas)
+        try
         {
-            DestroyImmediate(mona);
+            if (GameObject.FindGameObjectsWithTag("MONA").Length != 0)
+            {
+                GameObject[] monas = GameObject.FindGameObjectsWithTag("MONA");
+                foreach (GameObject mona in monas)
+                {
+                    DestroyImmediate(mona);
+                }
+
+            }
+
         }
+        catch (UnityException e) {
+            Debug.Log("No bees to clear");
+        }
+        
+       
+        
     }
 
     void CreateArena()
@@ -319,6 +340,7 @@ public class AutoSetup : MonoBehaviour
                 bee.GetComponent<BeeClust>().maxSensingRange = senseRange;
                 bee.GetComponent<BeeClust>().wMax = maxW;
                 bee.GetComponent<BeeClust>().theta = theta;
+                bee.GetComponent<BeeClust>().followTemp = followTemp;
 
             }
             else

@@ -152,8 +152,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3cfe3e5458c8e2a4da92db280b1d09c2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  beeNumbers: 100
-  thetaValues: 
+  beeCountsString: 10,20
+  thetaValuesString: 1000,2000
+  simTime: 100
+  simCount: 1
+  beeCount: 0
+  theta: 0
 --- !u!4 &1499760060
 Transform:
   m_ObjectHideFlags: 0

@@ -172,7 +172,6 @@ public class Parameters : MonoBehaviour
             {
                 Debug.Log("End");
                 run = false;
-                //SceneManager.LoadScene("AutoPlay", LoadSceneMode.Additive);
 
             }
         }

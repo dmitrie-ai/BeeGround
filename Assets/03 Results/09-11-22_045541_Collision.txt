@@ -1,2 +1,0 @@
-Run	Time	Name	X_pos	Y_pos	Collision	OnCue
-0	0.00	Bee0	32.52	26.54	0	True
