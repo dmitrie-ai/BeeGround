@@ -3,7 +3,12 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 using UnityEditor;
+using UnityEngine.UI;
 //Prepares a simulation without the need to go through the Settings menu. Fill in the parameters and just press play. It will automatically set everything up and run the simulation
+/* TODO:
+ 1) Remove redundancies in parameters (i.e. same parameters in Parameters.cs and here)
+ 2) Add support for obstacles
+ * */
 public class AutoSetup : MonoBehaviour
 {
 
@@ -24,7 +29,7 @@ public class AutoSetup : MonoBehaviour
     Texture2D pheTexture;*/
 
     //Bee Settings
-    public int beeCount = 30;
+    public string beeCountsString = "30"; // e.g. "30,20,40" will first run a whole session with 30 then a whole with 20 and so on 
     public bool followTemp = false;
     float beeWidth = 0.8f;
     float beeLength = 0.8f;
@@ -32,14 +37,15 @@ public class AutoSetup : MonoBehaviour
     float beeTurn = 50.0f;
     float senseRange = 1.0f;
     float maxW = 60.0f;
-    public float theta = 1000.0f;
+    public string thetaValuesString= "1000";  // same as beeCountsString
     public float timeSpeed = 1;
-
+    int parameterSetIndex = 0;
     int minX = 0;
     int maxX = 50;
     int minY = 0;
     int maxY = 50;
     int digitCount;
+    Parameters master;
 
     System.DateTime startDateTime;
 
@@ -47,25 +53,51 @@ public class AutoSetup : MonoBehaviour
     public float simTime = 100;
     public int simCount = 1;
     public string fileDir = "C:/Users/dmitr/Desktop/project/code/Bee-Ground_1.0/Bee-Ground_1.0/Assets/03 Results";
-
-    Parameters master;
+    string[] beeCounts;
+    string[] thetaValues;
+    int beeCount;
+    float theta;
 
     void Start()
     {
-        // ===
-        if (GameObject.Find("AutoPlayer") != null)
-        {
-            beeCount = AutoPlayer.startScene.beeCount; // needed for when we automate the runs. In AutoPlay Scene, parameter values are set and they are passed to the BeeClust scene one by one.
-            theta = AutoPlayer.startScene.theta;
-            simTime = AutoPlayer.startScene.simTime;
-            simCount = AutoPlayer.startScene.simCount;
-        } 
-        BuildArena();
-        GenerateBees();
-        SimConfig();
+        beeCounts = beeCountsString.Split(',');
+        thetaValues = thetaValuesString.Split(',');
+        if (beeCounts.Length != thetaValues.Length) {
+            Debug.LogError("length of parameter options for beeCount != length of parameter options for theta");
+        }
+        master = GameObject.Find("Master").GetComponent<Parameters>();
         Time.timeScale = timeSpeed;
     }
+    void Update()
+    {
+        if (master.run == false)
+        {
+            if (parameterSetIndex < beeCounts.Length) // we haven't run through all the provided set of parameters
+            {
+                theta = float.Parse(thetaValues[parameterSetIndex]);
+                beeCount = int.Parse(beeCounts[parameterSetIndex]);
+                BuildArena();
+                GenerateBees();
+                SimConfig();
+                master.run = true;
+                master.theta = theta;
+                master.beeCount = beeCount;
+                master.instance = 0;
+                master.iteration = 0;
+                master.startTime = Time.time;
+                master.init();
 
+                Debug.Log("Started session with theta = " + theta.ToString() + "   beeCount = " + beeCount.ToString());
+                
+                parameterSetIndex = parameterSetIndex + 1;
+            }
+            else {
+                Debug.Log("Done all iterations");
+            }
+            
+        }
+    
+    }
 
     void BuildArena()
     {
@@ -73,10 +105,6 @@ public class AutoSetup : MonoBehaviour
         ClearBees();
         ClearTestArea();
         CreateArena();
-            
-
-
-
         if (tempPath != "")
         {
             BuildTempTexture();
@@ -349,7 +377,6 @@ public class AutoSetup : MonoBehaviour
             }
                 
             GameObject[] monas = GameObject.FindGameObjectsWithTag("MONA");
-            Debug.Log("Number of Bees: " + monas.Length);
             master = GameObject.Find("Master").GetComponent<Parameters>();
             master.beeCount = beeCount;
             master.beeWidth = beeWidth;
@@ -361,7 +388,8 @@ public class AutoSetup : MonoBehaviour
             master.minY = minY;
             master.maxX = maxX;
             master.maxY = maxY;
-            master.digitCount = digitCount; 
+            master.digitCount = digitCount;
+            master.followTemp = followTemp;
 
         }
     }
@@ -375,7 +403,12 @@ public class AutoSetup : MonoBehaviour
         master.fileDir = fileDir;
   
     }
-    
+    IEnumerator waiter(int t)
+    {
+        yield return new WaitForSeconds(t);
+
+    }
+
 
 }
 

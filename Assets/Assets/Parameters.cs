@@ -16,12 +16,13 @@ public class Parameters : MonoBehaviour
     public int[,] tempEntries;
     public bool run = false;
     public int beeCount;
-    //public int followTemp;  whether the robots follow the temp gradient using their antenaes
+    public bool followTemp;  //whether the turn towards the "hotter" temo sensor after waiting
     public float beeWidth;
     public float beeLength;
     public float beeSpeed;
     public float beeTurn;
     public float senseRange;
+    public float theta;
     public int minX = 0;
     public int maxX = 0;
     public int minY = 0;
@@ -44,16 +45,48 @@ public class Parameters : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+
+        init();
+
+    }
+    public void init()
+    {
 
         maxX = length;
         maxY = width;
-        if(tempPath != "" && tempPath != null)
+        if (tempPath != "" && tempPath != null)
         {
-            
+
             PopulateTemperatureArray();
         }
-        path = fileDir + "/"+ System.DateTime.Now.ToString("dd-MM-yy_hhmmss") + "_Position"+ ".txt";
+        //write parameter config to file
+        string path_Parameters = fileDir + "/" + System.DateTime.Now.ToString("dd-MM-yy_hhmmss") + "_Parameters" + ".txt";
+        File.WriteAllText(path_Parameters, "Simulation Log:\n");
+        StreamWriter writer = new StreamWriter(path_Parameters, true);
+        writer.WriteLine("Date and Time: " + System.DateTime.Now.ToString("dd-MM-yy hh:mm:ss") + "\n");
+
+        writer.WriteLine("Simulation:\n" + "Time: " + simTime);
+        writer.WriteLine("Repeat count: " + simCount + "\n");
+
+        writer.WriteLine("Arena:\n" + "Length: " + length);
+        writer.WriteLine("Width: " + width + "\n");
+
+        writer.WriteLine("Agents:\n" + "Counts: " +beeCount);
+        writer.WriteLine("Follow temp gradient: " +followTemp);
+        writer.WriteLine("Theta: " + theta);
+
+        writer.WriteLine("Length: " + beeLength);
+        writer.WriteLine("Width: " + beeWidth);
+        writer.WriteLine("Speed: " + beeSpeed);
+        writer.WriteLine("Turning Speed: " + beeTurn);
+        writer.WriteLine("Sensor Range: " + senseRange + "\n");
+
+        writer.WriteLine("Initialization Postion:\n" + "X: from " + minX + " to " + maxX);
+        writer.WriteLine("Y: from " + minY + " to " + maxY);
+
+        writer.Close();
+
+        path = fileDir + "/" + System.DateTime.Now.ToString("dd-MM-yy_hhmmss") + "_Position" + ".txt";
         if (!File.Exists(path))
         {
             File.WriteAllText(path, "Run\tTime\tName\tX_pos\tY_pos\n");
@@ -61,8 +94,8 @@ public class Parameters : MonoBehaviour
         monas = GameObject.FindGameObjectsWithTag("MONA");
         run = true;
         totalInstances = (int)(simTime / interval);
-        
-        StreamWriter writer = new StreamWriter(path, true);
+
+        writer = new StreamWriter(path, true);
         writer.WriteLine();
         writer.Close();
         InvokeRepeating("LogPosition", 0.0f, 1.0f);
@@ -141,12 +174,13 @@ public class Parameters : MonoBehaviour
             writer.WriteLine(iteration + "\t" + time.ToString("F2") + "\t" + mona.name + "\t" + mona.transform.localPosition.x.ToString("F2") + "\t" + mona.transform.localPosition.z.ToString("F2"));
         }
         writer.Close();
-        instance++;
-        if(instance > totalInstances)
+        instance++; //second intervals passed
+        if(instance > totalInstances) // 
         {
             CancelInvoke();
-            if (iteration < simCount - 1)
+            if (iteration < simCount - 1)   // if 
             {
+                //resets after a full run if it hasn't completed all the runs
                 Debug.Log("Reset");
                 foreach (GameObject mona in monas)
                 {
@@ -172,7 +206,6 @@ public class Parameters : MonoBehaviour
             {
                 Debug.Log("End");
                 run = false;
-
             }
         }
     }

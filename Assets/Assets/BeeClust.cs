@@ -57,7 +57,6 @@ public class BeeClust : MonoBehaviour
         master = GameObject.Find("Master").GetComponent<Parameters>();
 
         fileDir = master.fileDir;
-        Debug.Log("fileDir in BeeClust.cs: " + fileDir);
 
         path_Collision = fileDir + "/" + System.DateTime.Now.ToString("dd-MM-yy_hhmmss") + "_Collision" + ".txt";
         if (!File.Exists(path_Collision))
@@ -71,7 +70,7 @@ public class BeeClust : MonoBehaviour
             File.WriteAllText(path_State, "Run\tTime\tName\tX_pos\tY_pos\tState\tDelay\tOnCue\n");
         }
 
-        path_Parameters = fileDir + "/" + System.DateTime.Now.ToString("dd-MM-yy_hhmmss") + "_Parameters" + ".txt";
+        /*path_Parameters = fileDir + "/" + System.DateTime.Now.ToString("dd-MM-yy_hhmmss") + "_Parameters" + ".txt";
         if (!File.Exists(path_Parameters))
         {
             File.WriteAllText(path_Parameters, "Simulation Log:\n");
@@ -85,7 +84,9 @@ public class BeeClust : MonoBehaviour
             writer.WriteLine("Width: " + master.width+"\n");
 
             writer.WriteLine("Agents:\n" + "Counts: " + master.beeCount);
-            //writer.WriteLine("Follow temp gradient: " + master.followTemp);
+            writer.WriteLine("Follow temp gradient: " + master.followTemp);
+            writer.WriteLine("Theta: " + theta);
+
             writer.WriteLine("Length: " + master.beeLength);
             writer.WriteLine("Width: " + master.beeWidth);
             writer.WriteLine("Speed: " + master.beeSpeed);
@@ -96,7 +97,7 @@ public class BeeClust : MonoBehaviour
             writer.WriteLine("Y: from " + master.minY + " to " + master.maxY);
 
             writer.Close();
-        }
+        }*/
         
 
     }
@@ -408,7 +409,7 @@ public class BeeClust : MonoBehaviour
             GetTurnAngle();
         }
         
-        Debug.Log("Intelligent turn angle: " + turnAngle.ToString());
+        //Debug.Log("Intelligent turn angle: " + turnAngle.ToString());
         StartCoroutine(Delay(w));
     }
     void WriteToCollisionsFile() {

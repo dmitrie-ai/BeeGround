@@ -467,12 +467,12 @@ MonoBehaviour:
   length: 50
   tempPath: C:/Users/dmitr/Desktop/project/code/Bee-Ground_1.0/Bee-Ground_1.0/Assets/02
     Temperature/Test_Temperature_1Cue_50_50.txt
-  beeCount: 30
+  beeCountsString: 30,20
   followTemp: 1
-  theta: 1000
-  timeSpeed: 30
-  simTime: 400
-  simCount: 10
+  thetaValuesString: 1000,2000
+  timeSpeed: 20
+  simTime: 100
+  simCount: 2
   fileDir: C:/Users/dmitr/Desktop/project/code/Bee-Ground_1.0/Bee-Ground_1.0/Assets/03
     Results
 --- !u!4 &630697797
@@ -1099,13 +1099,15 @@ MonoBehaviour:
   obsPath: 
   tempPath: C:/Users/dmitr/Desktop/project/code/Bee-Ground_1.0/Bee-Ground_1.0/Assets/02
     Temperature/Test_Temperature_1Cue_50_50.txt
-  run: 1
+  run: 0
   beeCount: 10
+  followTemp: 0
   beeWidth: 0.8
   beeLength: 0.8
   beeSpeed: 2
   beeTurn: 50
   senseRange: 1
+  theta: 0
   minX: 0
   maxX: 50
   minY: 0
