@@ -1,0 +1,25 @@
+Simulation Log:
+Date and Time: 28-11-22 05:09:32
+
+Simulation:
+Time: 400
+Repeat count: 20
+
+Arena:
+Length: 50
+Width: 50
+
+Agents:
+Counts: 30
+Simple Temp follow: True
+Vector Avg temp follow: False
+Theta: 1000
+Length: 0.8
+Width: 0.8
+Speed: 2
+Turning Speed: 50
+Sensor Range: 1
+
+Initialization Postion:
+X: from 0 to 50
+Y: from 0 to 50

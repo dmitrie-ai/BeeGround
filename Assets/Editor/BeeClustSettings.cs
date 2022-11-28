@@ -58,7 +58,7 @@ public class BeeClustSettings : EditorWindow
 
     void OnGUI()
     {
-
+        //Debug.Log()
         while (init)
         {
             master = GameObject.Find("Master").GetComponent<Parameters>();
@@ -168,10 +168,10 @@ public class BeeClustSettings : EditorWindow
             ClearBees();
             ClearTestArea();
             CreateArena();
-            if (obsPath != "")
+            /*if (obsPath != "")
             {
                 GenerateObstacles();
-            }
+            }*/
 
 
 

@@ -16,7 +16,8 @@ public class Parameters : MonoBehaviour
     public int[,] tempEntries;
     public bool run = false;
     public int beeCount;
-    public bool followTemp;  //whether the turn towards the "hotter" temo sensor after waiting
+    public bool simpleFollowTemp;  //whether the turn towards the "hotter" temo sensor after waiting
+    public bool vectorAvgFollowTemp;  //whether we use vector averaging with more sensors to get the turn angle after waiting
     public float beeWidth;
     public float beeLength;
     public float beeSpeed;
@@ -41,12 +42,16 @@ public class Parameters : MonoBehaviour
     public int totalInstances;
     public int instance = 0;
     GameObject[] monas;
+
+    private Renderer floorRenderer;
+    private Texture tempTex;
+
     
     // Start is called before the first frame update
     void Start()
     {
 
-        init();
+        /*init();*/
 
     }
     public void init()
@@ -72,7 +77,8 @@ public class Parameters : MonoBehaviour
         writer.WriteLine("Width: " + width + "\n");
 
         writer.WriteLine("Agents:\n" + "Counts: " +beeCount);
-        writer.WriteLine("Follow temp gradient: " +followTemp);
+        writer.WriteLine("Simple Temp follow: " +simpleFollowTemp);
+        writer.WriteLine("Vector Avg temp follow: " + vectorAvgFollowTemp);
         writer.WriteLine("Theta: " + theta);
 
         writer.WriteLine("Length: " + beeLength);
@@ -98,12 +104,13 @@ public class Parameters : MonoBehaviour
         writer = new StreamWriter(path, true);
         writer.WriteLine();
         writer.Close();
-        InvokeRepeating("LogPosition", 0.0f, 1.0f);
-
-        Renderer floorRenderer = GameObject.Find("Floor").GetComponent<Renderer>();
-        Texture tempTex = Resources.Load<Texture>("Textures/tempTexture");
+        floorRenderer = GameObject.Find("Floor").GetComponent<Renderer>();
+        tempTex = Resources.Load<Texture>("Textures/tempTexture");
         floorRenderer.material.mainTexture = tempTex;
         floorRenderer.material.SetColor("_Color", Color.white);
+        InvokeRepeating("LogPosition", 0.0f, 1.0f);
+
+        
 
     }
 
@@ -112,7 +119,6 @@ public class Parameters : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.UpArrow))
         {
-            Renderer floorRenderer = GameObject.Find("Floor").GetComponent<Renderer>();
             if (toggle > 0)
             {
                 toggle = 0;
@@ -128,7 +134,8 @@ public class Parameters : MonoBehaviour
             }
             if (toggle == 1)
             {
-                Texture tempTex = Resources.Load<Texture>("Textures/tempTexture");
+                
+                
                 floorRenderer.material.mainTexture = tempTex;
                 floorRenderer.material.SetColor("_Color", Color.white);
             }

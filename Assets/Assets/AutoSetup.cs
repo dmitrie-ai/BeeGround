@@ -8,6 +8,7 @@ using UnityEngine.UI;
 /* TODO:
  1) Remove redundancies in parameters (i.e. same parameters in Parameters.cs and here)
  2) Add support for obstacles
+ 3) Expand with more parameters that can be scheduled 
  * */
 public class AutoSetup : MonoBehaviour
 {
@@ -30,7 +31,8 @@ public class AutoSetup : MonoBehaviour
 
     //Bee Settings
     public string beeCountsString = "30"; // e.g. "30,20,40" will first run a whole session with 30 then a whole with 20 and so on 
-    public bool followTemp = false;
+    public bool simpleFollowTemp = false;
+    public bool vectorAvgFollowTemp = false;
     float beeWidth = 0.8f;
     float beeLength = 0.8f;
     float beeSpeed = 2.0f;
@@ -60,6 +62,10 @@ public class AutoSetup : MonoBehaviour
 
     void Start()
     {
+        
+        if (vectorAvgFollowTemp && simpleFollowTemp) {
+            Debug.LogError("Can't have both vector averaging and simple temp following");
+        }
         beeCounts = beeCountsString.Split(',');
         thetaValues = thetaValuesString.Split(',');
         if (beeCounts.Length != thetaValues.Length) {
@@ -68,10 +74,12 @@ public class AutoSetup : MonoBehaviour
         master = GameObject.Find("Master").GetComponent<Parameters>();
         Time.timeScale = timeSpeed;
     }
+    
     void Update()
     {
         if (master.run == false)
         {
+
             if (parameterSetIndex < beeCounts.Length) // we haven't run through all the provided set of parameters
             {
                 theta = float.Parse(thetaValues[parameterSetIndex]);
@@ -368,7 +376,9 @@ public class AutoSetup : MonoBehaviour
                 bee.GetComponent<BeeClust>().maxSensingRange = senseRange;
                 bee.GetComponent<BeeClust>().wMax = maxW;
                 bee.GetComponent<BeeClust>().theta = theta;
-                bee.GetComponent<BeeClust>().followTemp = followTemp;
+                bee.GetComponent<BeeClust>().simpleFollowTemp = simpleFollowTemp;
+                bee.GetComponent<BeeClust>().vectorAvgFollowTemp = vectorAvgFollowTemp;
+
 
             }
             else
@@ -389,7 +399,8 @@ public class AutoSetup : MonoBehaviour
             master.maxX = maxX;
             master.maxY = maxY;
             master.digitCount = digitCount;
-            master.followTemp = followTemp;
+            master.simpleFollowTemp = simpleFollowTemp;
+            master.vectorAvgFollowTemp = vectorAvgFollowTemp;
 
         }
     }

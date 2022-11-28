@@ -10,11 +10,16 @@ public class BeeClust : MonoBehaviour
 {
 
     public float maxSensingRange;
-    public bool followTemp = true;  // using temp sensors to follow the gradient of temp?
+    public bool simpleFollowTemp = true;  // using temp sensors to follow the gradient of temp?
     public float antennaAngle = 90.0f;   // arc angle between forward and the antenaes*/
-    public float antennaLength = 1.0f; // length of antenna from the center of the robot
-    private Vector3 tempSensorRight;
-    private Vector3 tempSensorLeft;
+    public float tempSensorLen = 1.0f; // length of temp sensors from the center of the robot
+    public bool vectorAvgFollowTemp = false; // whether we use vector averaging with more sensors to calculate the turn angle after waiting
+    private Vector3 tempSensorE; //Right temp sensor
+    private Vector3 tempSensorW;//Left temp sensor
+    private Vector3 tempSensorNW;//45 degrees left from forward
+    private Vector3 tempSensorNE;//45 degrees lright from forward
+    private Vector3 tempSensorN;//Forward temp sensor
+
     
     public float forwardSpeed;
     public float turnSpeed;   // hopw fast the robot can turn
@@ -54,6 +59,9 @@ public class BeeClust : MonoBehaviour
     // Use this for initialization
     void Start()
     {
+        /*Vector3 a = new Vector3(1, 0, 1);
+        Vector3 b = new Vector3(-2, 0, -1);
+        Debug.Log("test angle: "+DirectionalAngle(a.normalized, b.normalized));*/
         master = GameObject.Find("Master").GetComponent<Parameters>();
 
         fileDir = master.fileDir;
@@ -69,36 +77,6 @@ public class BeeClust : MonoBehaviour
         {
             File.WriteAllText(path_State, "Run\tTime\tName\tX_pos\tY_pos\tState\tDelay\tOnCue\n");
         }
-
-        /*path_Parameters = fileDir + "/" + System.DateTime.Now.ToString("dd-MM-yy_hhmmss") + "_Parameters" + ".txt";
-        if (!File.Exists(path_Parameters))
-        {
-            File.WriteAllText(path_Parameters, "Simulation Log:\n");
-            StreamWriter writer = new StreamWriter(path_Parameters, true);
-            writer.WriteLine("Date and Time: " + System.DateTime.Now.ToString("dd-MM-yy hh:mm:ss") + "\n");
-
-            writer.WriteLine("Simulation:\n" + "Time: " + master.simTime);
-            writer.WriteLine("Repeat count: " + master.simCount + "\n");
-  
-            writer.WriteLine("Arena:\n" + "Length: " + master.length);
-            writer.WriteLine("Width: " + master.width+"\n");
-
-            writer.WriteLine("Agents:\n" + "Counts: " + master.beeCount);
-            writer.WriteLine("Follow temp gradient: " + master.followTemp);
-            writer.WriteLine("Theta: " + theta);
-
-            writer.WriteLine("Length: " + master.beeLength);
-            writer.WriteLine("Width: " + master.beeWidth);
-            writer.WriteLine("Speed: " + master.beeSpeed);
-            writer.WriteLine("Turning Speed: " + master.beeTurn);
-            writer.WriteLine("Sensor Range: " + master.senseRange + "\n");
-
-            writer.WriteLine("Initialization Postion:\n" + "X: from " + master.minX + " to " + master.maxX);
-            writer.WriteLine("Y: from " + master.minY + " to " + master.maxY);
-
-            writer.Close();
-        }*/
-        
 
     }
 
@@ -153,7 +131,7 @@ public class BeeClust : MonoBehaviour
                             {
                                 turnAngle = -turnAngle1;
                             }*/
-                            turnAngle = getRandomTurnAngle();
+                            turnAngle = GetRandomTurnAngle();
                             if (frontSens.transform.gameObject.CompareTag("MONA")) //if the hit is another robot
                             {
                                 WaitFunction();   // wait then turning =True and turnAngle = towards hot
@@ -171,7 +149,7 @@ public class BeeClust : MonoBehaviour
                         {
                             startBearing = transform.rotation;
                             //turnAngle = turnAngle2;
-                            turnAngle = getRandomTurnAngle();
+                            turnAngle = GetRandomTurnAngle();
                             if (frontSens.transform.gameObject.CompareTag("MONA") && !frontSensingOnly)
                             {
                                 WaitFunction();
@@ -188,7 +166,7 @@ public class BeeClust : MonoBehaviour
                         {
                             startBearing = transform.rotation;
                             //turnAngle = turnAngle3;
-                            turnAngle = getRandomTurnAngle();
+                            turnAngle = GetRandomTurnAngle();
                             if (frontSens.transform.gameObject.CompareTag("MONA") && !frontSensingOnly)
                             {
                                 WaitFunction();
@@ -204,8 +182,7 @@ public class BeeClust : MonoBehaviour
                         if (!turning)
                         {
                             startBearing = transform.rotation;
-                            //turnAngle = -turnAngle2;
-                            turnAngle = getRandomTurnAngle();
+                            turnAngle = GetRandomTurnAngle();
                             if (frontSens.transform.gameObject.CompareTag("MONA") && !frontSensingOnly)
                             {
                                 WaitFunction();
@@ -221,8 +198,8 @@ public class BeeClust : MonoBehaviour
                         if (!turning)
                         {
                             startBearing = transform.rotation;
-                            //turnAngle = -turnAngle3;
-                            turnAngle = getRandomTurnAngle();
+                             
+                            turnAngle = GetRandomTurnAngle();
                             if (frontSens.transform.gameObject.CompareTag("MONA") && !frontSensingOnly)
                             {
                                 WaitFunction();
@@ -246,11 +223,17 @@ public class BeeClust : MonoBehaviour
         irRight1 = Quaternion.AngleAxis(sensor2angle, Vector3.up) * transform.forward;
         irRight2 = Quaternion.AngleAxis(sensor3angle, Vector3.up) * transform.forward;
 
-        tempSensorRight = Vector3.ClampMagnitude(Quaternion.AngleAxis(antennaAngle, Vector3.up) * transform.forward, antennaLength);
-        tempSensorLeft = Vector3.ClampMagnitude(Quaternion.AngleAxis(-antennaAngle, Vector3.up) * transform.forward, antennaLength);
+        tempSensorE = Vector3.ClampMagnitude(Quaternion.AngleAxis(90, Vector3.up) * transform.forward, tempSensorLen);
+        tempSensorW = Vector3.ClampMagnitude(Quaternion.AngleAxis(-90, Vector3.up) * transform.forward, tempSensorLen);
+        tempSensorNW = Vector3.ClampMagnitude(Quaternion.AngleAxis(-45, Vector3.up) * transform.forward, tempSensorLen);
+        tempSensorNE = Vector3.ClampMagnitude(Quaternion.AngleAxis(45, Vector3.up) * transform.forward, tempSensorLen);
+        tempSensorN = Vector3.ClampMagnitude(transform.forward, tempSensorLen);
         // temp sensors
-        Debug.DrawRay(transform.position, tempSensorLeft, Color.cyan);
-        Debug.DrawRay(transform.position, tempSensorRight,Color.cyan);
+        Debug.DrawRay(transform.position, tempSensorW, Color.cyan);
+        Debug.DrawRay(transform.position, tempSensorE,Color.cyan);
+        Debug.DrawRay(transform.position, tempSensorNE, Color.cyan);
+        Debug.DrawRay(transform.position, tempSensorNW, Color.cyan);
+        Debug.DrawRay(transform.position, tempSensorN, Color.cyan);
         //forward
         Debug.DrawRay(transform.position, transform.forward * maxSensingRange, Color.magenta);
         //ir sensors
@@ -259,63 +242,127 @@ public class BeeClust : MonoBehaviour
         Debug.DrawRay(transform.position, irRight1 * maxSensingRange);
         Debug.DrawRay(transform.position, irRight2 * maxSensingRange);
     }
-    private void OnDrawGizmos() {
+    private float DirectionalAngle(Vector3 vec1, Vector3 vec2)
+    {
+        Vector2 to = new Vector2(vec1.x, vec1.z);
+        Vector2 from = new Vector2(vec2.x, vec2.z);
+        to = to.normalized;
+        from = from.normalized;
         
-        
+        float det = (from.x * to.y) - (from.y * to.x);
+        float dot = Vector2.Dot(from, to);
+
+        return Mathf.Rad2Deg * (Mathf.Atan2(det, dot));
     }
 
-    void GetTurnAngle()//get the angle to turn based on the temperature sensed at the antennaes
-    {
-        //get x and y of right antennae tip
- 
-        Vector3 rightTip = transform.position + tempSensorRight;
-        int rightTipX = (int)Mathf.Round(rightTip.x * 10.0f);
-        int rightTipY = (int)Mathf.Round(rightTip.z * 10.0f);
-        //left antenna
- 
-        Vector3 leftTip = transform.position + tempSensorLeft;
-        int leftTipX = (int)Mathf.Round(leftTip.x * 10.0f);
-        int leftTipY = (int)Mathf.Round(leftTip.z * 10.0f);
-        //get temps at each antenna
-        int leftTemp;
-        int rightTemp;
-        try{
-            leftTemp = master.tempEntries[leftTipY, leftTipX]; // gets the temperature at the left antenna
-        }
-        catch (System.IndexOutOfRangeException) {
-            leftTemp = 0;
-            //Debug.Log("Left antena is out of range");
-        }
-
+    float GetTemp(int x, int y) {
+        float temp;
         try
         {
-            rightTemp = master.tempEntries[rightTipY, rightTipX]; // gets the temperature at the right antenna
+            temp =master.tempEntries[x, y]; // gets the temperature at the left antenna
         }
         catch (System.IndexOutOfRangeException)
         {
-            //Debug.Log("Right antena is out of range");
-            rightTemp = 0;
+            temp = 0;
+            
         }
+        return temp;
+    }
+    float GetVectorAvgAngle() {
+        // get x and y of all antennae tips
+        Vector3 tipE = transform.position + tempSensorE;
+        int tipE_x = (int)Mathf.Round(tipE.x * 10.0f);
+        int tipE_y = (int)Mathf.Round(tipE.z * 10.0f);
+
+        Vector3 tipW = transform.position + tempSensorW;
+        int tipW_x = (int)Mathf.Round(tipW.x * 10.0f);
+        int tipW_y = (int)Mathf.Round(tipW.z * 10.0f);
+
+        Vector3 tipNW = transform.position + tempSensorNW;
+        int tipNW_x = (int)Mathf.Round(tipNW.x * 10.0f);
+        int tipNW_y = (int)Mathf.Round(tipNW.z * 10.0f);
+
+        Vector3 tipNE = transform.position + tempSensorNE;
+        int tipNE_x = (int)Mathf.Round(tipNE.x * 10.0f);
+        int tipNE_y = (int)Mathf.Round(tipNE.z * 10.0f);
+
+        Vector3 tipN = transform.position + tempSensorN;
+        int tipN_x = (int)Mathf.Round(tipN.x * 10.0f);
+        int tipN_y = (int)Mathf.Round(tipN.z * 10.0f);
+
+        //get temperature at tips
+        float tipE_temp = GetTemp(tipE_x, tipE_y);
+        float tipW_temp = GetTemp(tipW_x, tipW_y);
+        float tipNE_temp = GetTemp(tipNE_x, tipNE_y);
+        float tipNW_temp = GetTemp(tipNW_x, tipNW_y);
+        float tipN_temp = GetTemp(tipN_x, tipN_y);
+
+        Vector3 wVectorSum = tempSensorE * tipE_temp + tempSensorW * tipW_temp + tempSensorNE * tipNE_temp + tempSensorNW * tipNW_temp + tempSensorN * tipN_temp;
+        if (wVectorSum.magnitude == 0) {
+
+            return GetRandomTurnAngle();
+        }
+        else {
+            float angle = DirectionalAngle(transform.forward.normalized, wVectorSum.normalized);
+            Debug.Log("Vector Sum: " + wVectorSum.normalized + "  forward: " + transform.forward.normalized + "   angle: " + angle.ToString());
+            return angle;
+        }
+        /*if (angle == 0) {
+            angle = GetRandomTurnAngle();
+        }*/
+        
+    }
+    float GetSimpleTempAngle() {
+        Vector3 rightTip = transform.position + tempSensorE;
+        int rightTipX = (int)Mathf.Round(rightTip.x * 10.0f);
+        int rightTipY = (int)Mathf.Round(rightTip.z * 10.0f);
+        //left antenna
+
+        Vector3 leftTip = transform.position + tempSensorW;
+        int leftTipX = (int)Mathf.Round(leftTip.x * 10.0f);
+        int leftTipY = (int)Mathf.Round(leftTip.z * 10.0f);
+        //get temps at each antenna
+        float leftTemp = GetTemp(leftTipX, leftTipY);
+        float rightTemp = GetTemp(rightTipX, rightTipY);
         /*Debug.Log("Left temp = " + leftTemp);
         Debug.Log("Right temp = " + rightTemp);
         Debug.Log("********");*/
+        float turnAngle;
         //get rotation angle
         if (leftTemp > rightTemp)
         {
             turnAngle = -fixedTempTurnAngle;
-            
+
         }
         else if (rightTemp > leftTemp)
         {
             turnAngle = fixedTempTurnAngle;
-            
+
+        }
+        else
+        {
+            turnAngle = GetRandomTurnAngle();
+
+        }
+        return turnAngle;
+
+    }
+    void SetTurnAngle()//get the angle to turn based on the 
+    {
+        if (simpleFollowTemp)
+        {
+            turnAngle = GetSimpleTempAngle();
+
+        }
+        else if (vectorAvgFollowTemp)
+        {
+            turnAngle = GetVectorAvgAngle();
         }
         else {
-            turnAngle = getRandomTurnAngle();
-            
+            turnAngle = GetRandomTurnAngle();
         }
     }
-    int getRandomTurnAngle() {
+    int GetRandomTurnAngle() {
         
         int[] angleOptions = new int[] { -90, -80, -70, -60, -50,  90, 80, 70, 60, 50}; // removed smaller angles because those angles will most likely point towards the wall it collided with
         int index = Random.Range(0,angleOptions.Length);
@@ -401,15 +448,15 @@ public class BeeClust : MonoBehaviour
 
         writer.WriteLine(master.iteration + "\t" + time.ToString("F2") + "\t" + gameObject.name + "\t" + transform.localPosition.x.ToString("F2") + "\t" + transform.localPosition.z.ToString("F2") + "\t" + collision + "\t" + oncue);
         writer.Close();
-        StreamWriter writer_state = new StreamWriter(path_State, true);
+        /*StreamWriter writer_state = new StreamWriter(path_State, true);
 
         writer_state.WriteLine(master.iteration + "\t" + time.ToString("F2") + "\t" + gameObject.name + "\t" + transform.localPosition.x.ToString("F2") + "\t" + transform.localPosition.z.ToString("F2") + "\t" + "0" + "\t" + w + "\t" + oncue);
-        writer_state.Close();
-        if (followTemp == true) {
-            GetTurnAngle();
-        }
-        
+        writer_state.Close();*/
+        SetTurnAngle(); //depending on whether it is set to use simple temp follow, vector avg or none(random)
         //Debug.Log("Intelligent turn angle: " + turnAngle.ToString());
+        if (w > 0) { 
+            waiting = true;
+        }
         StartCoroutine(Delay(w));
     }
     void WriteToCollisionsFile() {
